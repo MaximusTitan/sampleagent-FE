@@ -1,4 +1,4 @@
-// File: C:\Users\user\OneDrive\Documents\GitHub\agentBI\frontend\src\app\main\page.tsx
+// File: C:\Users\user\OneDrive\Desktop\agentbi\frontend\src\app\main\page.tsx
 import * as entry from '../../../../src/app/main/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
