@@ -1,4 +1,3 @@
-//Repo Change
 'use client';
 
 import { useState, useCallback } from 'react';
@@ -41,6 +40,22 @@ export default function FileUpload() {
       const droppedFiles = Array.from(e.dataTransfer.files);
       const validFiles = droppedFiles.filter((file) => allowedTypes.includes(file.type));
       setFiles([...files, ...validFiles]); // Update directly
+
+      // Immediately send the file to the backend after it's dropped
+      const fileName = validFiles[0].name; // Assuming you're handling the first file dropped
+      fetch('http://127.0.0.1:8000/process-data/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filename: fileName,
+          user_input: '', // Empty user input as this is just a file upload
+        }),
+      })
+        .then((response) => response.json())
+        .then((result) => console.log(result))
+        .catch((error) => console.error('Error uploading file:', error));
     },
     [allowedTypes, files, setFiles]
   );
@@ -51,6 +66,22 @@ export default function FileUpload() {
         const selectedFiles = Array.from(e.target.files);
         const validFiles = selectedFiles.filter((file) => allowedTypes.includes(file.type));
         setFiles([...files, ...validFiles]); // Update directly
+
+        // Immediately send the file to the backend after it's selected
+        const fileName = validFiles[0].name; // Assuming you're handling the first file selected
+        fetch('http://127.0.0.1:8000/process-data/', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            filename: fileName,
+            user_input: '', // Empty user input as this is just a file upload
+          }),
+        })
+          .then((response) => response.json())
+          .then((result) => console.log(result))
+          .catch((error) => console.error('Error uploading file:', error));
       }
     },
     [allowedTypes, files, setFiles]

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Plus, ArrowUpIcon, Sun, Moon, Book } from 'lucide-react';
+import { PaperclipIcon, ArrowUpIcon, Sun, Moon, Book } from 'lucide-react';
 import { useFileContext } from '@/context/FileContext';
 
 type Message = {
@@ -13,7 +13,6 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [inputText, setInputText] = useState('');
-  const [showWarning, setShowWarning] = useState(false); // State to control warning visibility
   const { files, setFiles } = useFileContext(); // Access uploaded files and set them
 
   const fileInputRef = useRef<HTMLInputElement>(null); // Ref for the file input
@@ -27,18 +26,36 @@ export default function ChatInterface() {
     document.body.classList.toggle('light', !isDarkTheme);
   }, [isDarkTheme]);
 
-  const handleSendMessage = () => {
-    if (inputText.trim()) {
-      if (files.length === 0) {
-        setShowWarning(true); // Show the warning if no files are uploaded
-        return;
-      }
+  // Send message with valid file and user input data
+  const handleSendMessage = async () => {
+    if (inputText.trim() && files.length > 0) {
+      const fileName = files[0].name; // Assuming we are sending the first file
 
+      // Send user input and file name to the backend
+      const response = await fetch('http://127.0.0.1:8000/process-data/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filename: fileName,
+          user_input: inputText,
+        }),
+      });
+
+      const result = await response.json();
+      console.log(result); // You can print this result to the frontend if needed
+
+      // Add the message to the chat
       setMessages((prevMessages) => [
         ...prevMessages,
         { content: inputText, type: 'user' },
       ]);
-      setInputText(''); // Clear input after sending the message
+      setInputText('');
+    } else if (files.length === 0) {
+      alert('Please upload a file first.');
+    } else if (!inputText.trim()) {
+      alert('Please enter a message.');
     }
   };
 
@@ -53,7 +70,22 @@ export default function ChatInterface() {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
       setFiles((prevFiles: File[]) => [...prevFiles, ...selectedFiles]); // Add files to context state
-      setShowWarning(false); // Hide warning once a file is uploaded
+
+      // Send the file name to the backend immediately when the file is uploaded
+      const fileName = selectedFiles[0].name;
+      fetch('http://127.0.0.1:8000/process-data/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          filename: fileName,
+          user_input: '', // Empty user input as this is just a file upload
+        }),
+      })
+        .then((response) => response.json())
+        .then((result) => console.log(result))
+        .catch((error) => console.error('Error uploading file:', error));
     }
   };
 
@@ -77,7 +109,7 @@ export default function ChatInterface() {
               </h2>
             </div>
             <button className="p-1 hover:bg-gray-700 rounded" onClick={handleFileClick}>
-              <Plus className="w-6 h-6 text-gray-400" /> {/* Plus icon */}
+              <PaperclipIcon className="w-6 h-6 text-gray-400" /> {/* Plus icon */}
             </button>
           </div>
           <ul className="space-y-2">
@@ -94,13 +126,6 @@ export default function ChatInterface() {
 
         {/* Main chat area */}
         <main className="flex-1 overflow-y-auto p-4">
-          {/* Warning message */}
-          {showWarning && (
-            <div className="bg-red-500 text-white p-2 rounded-md mb-4 text-center">
-              Click on '+' to upload a file in your library.
-            </div>
-          )}
-
           <div className="max-w-3xl mx-auto space-y-8">
             {/* Show "What can I help with?" only when there are no user messages */}
             {messages.length === 0 && (
