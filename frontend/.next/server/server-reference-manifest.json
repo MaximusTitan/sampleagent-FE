@@ -1,0 +1,22 @@
+{
+  "node": {
+    "7fc8ddf1770b7fc196b6dae003cedfe8d36a20e937": {
+      "workers": {
+        "app/main/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cuser%5C%5COneDrive%5C%5CDocuments%5C%5CGitHub%5C%5CagentBI%5C%5Cfrontend%5C%5Cnode_modules%5C%5C%40clerk%5C%5Cnextjs%5C%5Cdist%5C%5Cesm%5C%5Capp-router%5C%5Cserver-actions.js%22%2C%5B%5B%227fc8ddf1770b7fc196b6dae003cedfe8d36a20e937%22%2C%22invalidateCacheAction%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        },
+        "app/page": {
+          "moduleId": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22C%3A%5C%5CUsers%5C%5Cuser%5C%5COneDrive%5C%5CDocuments%5C%5CGitHub%5C%5CagentBI%5C%5Cfrontend%5C%5Cnode_modules%5C%5C%40clerk%5C%5Cnextjs%5C%5Cdist%5C%5Cesm%5C%5Capp-router%5C%5Cserver-actions.js%22%2C%5B%5B%227fc8ddf1770b7fc196b6dae003cedfe8d36a20e937%22%2C%22invalidateCacheAction%22%5D%5D%5D%5D&__client_imported__=true!",
+          "async": false
+        }
+      },
+      "layer": {
+        "app/main/page": "action-browser",
+        "app/page": "action-browser"
+      }
+    }
+  },
+  "edge": {},
+  "encryptionKey": "FgjhhQ3lXjxYUGLm/Ed4M7zXjiKJ9OVDF5i/b1owDyc="
+}
