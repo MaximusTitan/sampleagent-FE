@@ -72,20 +72,17 @@ export default function ChatInterface() {
       setFiles((prevFiles: File[]) => [...prevFiles, ...selectedFiles]); // Add files to context state
 
       // Send the file name to the backend immediately when the file is uploaded
-      const fileName = selectedFiles[0].name;
-      fetch('http://127.0.0.1:8000/process-data/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          filename: fileName,
-          user_input: '', // Empty user input as this is just a file upload
-        }),
-      })
-        .then((response) => response.json())
-        .then((result) => console.log(result))
-        .catch((error) => console.error('Error uploading file:', error));
+      const formData = new FormData();
+        formData.append('file', e.target.files[0]); // Send the first selected file
+        formData.append('user_input', ''); // Optional user input
+
+        fetch('http://127.0.0.1:8000/upload-file/', {
+            method: 'POST',
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((result) => console.log(result))
+            .catch((error) => console.error('Error uploading file:', error));
     }
   };
 
