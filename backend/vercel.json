@@ -14,7 +14,7 @@
     ],
     "functions": {
       "backend/*": {
-        "includeFiles": ["requirements.txt", "backend/**"]
+        "includeFiles": "requirements.txt,backend/**"
       }
     }
   }
