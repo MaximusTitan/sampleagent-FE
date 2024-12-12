@@ -23,7 +23,7 @@ async def process_data(data: UserInput):
     input_length = cal_len(data.user_input)
     agent_response = wiki_agent(data.user_input)
     if data.user_input:
-        print(f"User Input: {data.user_input}")
+        print(f"User Inputs: {data.user_input}")
     return {
         "message": "Data received successfully!",
         "input_length": input_length , # Send the length back to the frontend
