@@ -1,30 +1,38 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+from utils import cal_len
+from utils import wiki_agent
 
 app = FastAPI()
 
-# Enable CORS for all origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["*"],  # Or specify the frontend domain: ["http://localhost:3000"]
     allow_credentials=True,
-    allow_methods=["*"],  # Allows all HTTP methods
-    allow_headers=["*"],  # Allows all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-class FileData(BaseModel):
-    filename: str
+class UserInput(BaseModel):
     user_input: str
 
 @app.post("/process-data/")
-async def process_data(data: FileData):
-    if data.filename:
-        print(f"File: {data.filename}")
+async def process_data(data: UserInput):
+    input_length = cal_len(data.user_input)
+    agent_response = wiki_agent(data.user_input)
     if data.user_input:
         print(f"User Input: {data.user_input}")
-    return {"message": "Data received successfully!"}
+    return {
+        "message": "Data received successfully!",
+        "input_length": input_length , # Send the length back to the frontend
+        "agent's response": agent_response
+    }
+
+@app.get("/")
+async def read_root():
+    return {"message": "Hello World"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
