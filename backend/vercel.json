@@ -11,6 +11,13 @@
         "src": "/(.*)",
         "dest": "main.py"
       }
-    ]
+    ],
+    "functions": {
+          "api/*": {
+            "includeFiles": ["requirements.txt", "api/**"]
+          }
+        },
+        "ignoreFiles": ["venv/**", "*.pyc", "__pycache__/**"]
+            
   }
   
