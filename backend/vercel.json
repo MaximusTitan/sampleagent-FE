@@ -14,7 +14,7 @@
     ],
     "functions": {
         "api/*": {
-            "includeFiles": ["requirements.txt", "api/**"]
+            "includeFiles": "requirements.txt"
         }
     }
 }
