@@ -1,20 +1,21 @@
 {
     "version": 2,
     "builds": [
-        {
-            "src": "main.py",
-            "use": "@vercel/python"
-        }
+      {
+        "src": "backend/main.py",
+        "use": "@vercel/python"
+      }
     ],
     "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "main.py"
-        }
+      {
+        "src": "/(.*)",
+        "dest": "backend/main.py"
+      }
     ],
     "functions": {
-        "api/*": {
-            "includeFiles": "requirements.txt"
-        }
+      "backend/*": {
+        "includeFiles": ["requirements.txt", "backend/**"]
+      }
     }
-}
+  }
+  
