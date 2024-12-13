@@ -1,12 +1,14 @@
 {
   "name": "sampleagent",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "fastapi-dev": "cd backend && pip3 install -r requirements.txt && uvicorn main:app --reload",
+    "next-dev": "cd frontend && next dev",
+    "dev": "concurrently \"npm run next-dev\" \"npm run fastapi-dev\"",
+    "build": "cd frontend && next build",
+    "start": "cd frontend && next start",
+    "lint": "cd frontend && next lint"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.5.0",
