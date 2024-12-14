@@ -5,11 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+interface RawMessage {
+  text: string;
+  type: 'user' | 'agent' | 'tool';
+  timestamp?: string;
+}
+
 interface Message {
   userInput: string;
   agentResponse: string | null;
   toolMessage?: string | null;
-  rawMessages?: any[];
+  rawMessages?: RawMessage[]; // Replace any[] with RawMessage[]
 }
 
 const base_url = process.env.NEXT_PUBLIC_BASE_URL!;
@@ -25,16 +31,19 @@ export default function ChatbotUI() {
 
   const handleSubmit = () => {
     if (userInput.trim() === '') return;
-
-    // Add a temporary message with null values
-    setMessages([...messages, { 
-      userInput: userInput, 
-      agentResponse: null,
-      toolMessage: null,
-      rawMessages: []
-    }]);
-    setUserInput('');
-
+  
+    // Add a temporary message with null values for placeholders
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        userInput,
+        agentResponse: null,
+        toolMessage: null,
+        rawMessages: [],
+      },
+    ]);
+    setUserInput(''); // Clear input field
+  
     fetch(`${base_url}/process-data/`, {
       method: 'POST',
       headers: {
@@ -51,15 +60,17 @@ export default function ChatbotUI() {
         return response.json();
       })
       .then((result) => {
-        console.log(result);
+        console.log(result); // Log the result for debugging
+  
+        // Update the last message with the response data
         setMessages((prevMessages) =>
           prevMessages.map((msg, index) =>
             index === prevMessages.length - 1
-              ? { 
+              ? {
                   userInput: msg.userInput,
-                  agentResponse: result["agent's response"], 
+                  agentResponse: result["agent's response"],
                   toolMessage: result["tool_response"] || null,
-                  rawMessages: result["raw_messages"] || []
+                  rawMessages: result["raw_messages"] || [],
                 }
               : msg
           )
@@ -68,7 +79,7 @@ export default function ChatbotUI() {
       .catch((error) => {
         console.error('Error sending input:', error.message);
       });
-  };
+  };  
 
   useEffect(() => {
     if (scrollAreaRef.current) {
