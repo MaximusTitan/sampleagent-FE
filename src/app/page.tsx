@@ -5,10 +5,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+interface Message {
+  userInput: string;
+  agentResponse: string | null;
+  toolMessage?: string | null;
+  rawMessages?: any[];
+}
+
 const base_url = process.env.NEXT_PUBLIC_BASE_URL!;
 
 export default function ChatbotUI() {
-  const [messages, setMessages] = useState<{ text: string; agentResponse: string | null }[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState('');
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
@@ -19,8 +26,13 @@ export default function ChatbotUI() {
   const handleSubmit = () => {
     if (userInput.trim() === '') return;
 
-    // Add a temporary message with a null agentResponse
-    setMessages([...messages, { text: userInput, agentResponse: null }]);
+    // Add a temporary message with null values
+    setMessages([...messages, { 
+      userInput: userInput, 
+      agentResponse: null,
+      toolMessage: null,
+      rawMessages: []
+    }]);
     setUserInput('');
 
     fetch(`${base_url}/process-data/`, {
@@ -43,7 +55,12 @@ export default function ChatbotUI() {
         setMessages((prevMessages) =>
           prevMessages.map((msg, index) =>
             index === prevMessages.length - 1
-              ? { ...msg, agentResponse: result["agent's response"] }
+              ? { 
+                  userInput: msg.userInput,
+                  agentResponse: result["agent's response"], 
+                  toolMessage: result["tool_response"] || null,
+                  rawMessages: result["raw_messages"] || []
+                }
               : msg
           )
         );
@@ -66,11 +83,23 @@ export default function ChatbotUI() {
           <div key={index} className="mb-4">
             {/* User Input aligned right */}
             <div className="block max-w-max p-2 bg-primary text-primary-foreground rounded-lg text-right ml-auto">
-              {message.text}
+              {message.userInput}
             </div>
+            
+            {/* Tool Message aligned left */}
+            {message.toolMessage && (
+              <div className="block max-w-max p-2 bg-yellow-100 text-yellow-900 rounded-lg text-left mt-2">
+                <strong>Tool Message:</strong>
+                <br />
+                {message.toolMessage}
+              </div>
+            )}
+            
             {/* Agent Response aligned left */}
             {message.agentResponse !== null && (
               <div className="block max-w-max p-2 bg-secondary text-secondary-foreground rounded-lg text-left mt-2">
+                <strong>AI Message:</strong>
+                <br/>
                 {message.agentResponse}
               </div>
             )}
